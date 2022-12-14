@@ -34,6 +34,27 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int selected = 0;
+  bool isVisible = true;
+  final List<SimpleSidebarItem> sidebarItems = [
+    SimpleSidebarItem(
+        title: "Home",
+        iconFront: Icons.home_outlined,
+        child: const Center(child: Text("Home"))),
+    SimpleSidebarItem(
+        title: "Gallery",
+        iconFront: Icons.image_outlined,
+        child: const Center(child: Text("Gallery"))),
+    SimpleSidebarItem(
+        title: "Users",
+        iconFront: Icons.group_outlined,
+        child: const Center(child: Text("Users"))),
+    SimpleSidebarItem(
+        title: "Exit",
+        iconEnd: Icons.close,
+        child: const Center(child: Text("Exit"))),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,26 +63,24 @@ class _MyHomePageState extends State<MyHomePage> {
         SimpleSidebar(
           simpleSidebarTheme: SimpleSidebarTheme(),
           initialState: false,
-          startIndexWithOne: true,
-          sidebarItems: [
-            SimpleSidebarItem(title: "Home", iconFront: Icons.home_outlined),
-            SimpleSidebarItem(
-                title: "Gallery", iconFront: Icons.image_outlined),
-            SimpleSidebarItem(title: "Users", iconFront: Icons.group_outlined),
-            SimpleSidebarItem(title: "Exit", iconEnd: Icons.close),
-          ],
+          sidebarItems: sidebarItems,
           onTapped: (value) {
             log("Switch to Item with value $value");
+            setState(() {
+              selected = value;
+            });
           },
           toggleSidebar: (value) {
             log("Sidebar is now $value");
           },
         ),
         Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-                color: Colors.red, borderRadius: BorderRadius.circular(16)),
-            margin: const EdgeInsets.all(8),
+          child: AnimatedOpacity(
+            opacity: isVisible ? 1 : 0,
+            duration: const Duration(milliseconds: 100),
+            child: Container(
+                margin: const EdgeInsets.all(8),
+                child: sidebarItems.elementAt(selected).child),
           ),
         )
       ],
