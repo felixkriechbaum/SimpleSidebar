@@ -44,8 +44,7 @@ Row(
 
 ## Additional information
 
-Should there be any questions, wishes mail me:
-support@glocknerstudios.at
+Should there be any questions, wishes mail me: [Contect](mailto:support@glocknerstudios.at)
 
 create an issue on GitHub for bugs.
 And now have fun with the sidebar
