@@ -1,17 +1,43 @@
-Simple and quick to set up sidebar. Soft animations
+import 'dart:developer';
 
-## Features
+import 'package:flutter/material.dart';
+import 'package:simple_sidebar/simple_sidebar.dart';
+import 'package:simple_sidebar/simple_sidebar_item.dart';
+import 'package:simple_sidebar/simple_sidebar_theme.dart';
 
-[Comming soon]
+void main() {
+  runApp(const MyApp());
+}
 
-## Getting started
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
-Just add the package to pubspec.yaml and start using it.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}
 
-## Usage
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
 
-```dart
-Row(
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Row(
       children: [
         SimpleSidebar(
           simpleSidebarTheme: SimpleSidebarTheme(),
@@ -39,13 +65,6 @@ Row(
           ),
         )
       ],
-    )
-```
-
-## Additional information
-
-Should there be any questions, wishes mail me:
-support@glocknerstudios.at
-
-create an issue on GitHub for bugs.
-And now have fun with the sidebar
+    ));
+  }
+}
