@@ -12,6 +12,7 @@ class SimpleSidebarTheme {
   Color hoverColor;
   double? expandedWidth = 190;
   double? collapsedWidth = 73;
+  double? distanceBetweenElements = 8;
 
   SimpleSidebarTheme(
       {this.expandedBackgroundColor = Colors.blueGrey,
@@ -24,5 +25,6 @@ class SimpleSidebarTheme {
       this.unselectedTextColor = Colors.black45,
       this.hoverColor = Colors.black12,
       this.expandedWidth,
-      this.collapsedWidth});
+      this.collapsedWidth,
+      this.distanceBetweenElements});
 }

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_sidebar/simple_sidebar.dart';
 import 'package:simple_sidebar/simple_sidebar_item.dart';
@@ -15,27 +16,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Simplesidebar Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        textTheme: const TextTheme(
+          bodyText1: TextStyle(color: Colors.white),
+          bodyText2: TextStyle(color: Colors.white),
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: kDebugMode,
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int selected = 0;
-  bool isVisible = true;
   final List<SimpleSidebarItem> sidebarItems = [
     SimpleSidebarItem(
         title: "Home",
@@ -54,36 +48,57 @@ class _MyHomePageState extends State<MyHomePage> {
         iconEnd: Icons.close,
         child: const Center(child: Text("Exit"))),
   ];
+  final String title;
 
+  MyHomePage({super.key, required this.title});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int selected = 0;
+  bool isVisible = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.blueGrey[800],
         body: Row(
-      children: [
-        SimpleSidebar(
-          simpleSidebarTheme: SimpleSidebarTheme(),
-          initialState: false,
-          sidebarItems: sidebarItems,
-          onTapped: (value) {
-            log("Switch to Item with value $value");
-            setState(() {
-              selected = value;
-            });
-          },
-          toggleSidebar: (value) {
-            log("Sidebar is now $value");
-          },
-        ),
-        Expanded(
-          child: AnimatedOpacity(
-            opacity: isVisible ? 1 : 0,
-            duration: const Duration(milliseconds: 100),
-            child: Container(
-                margin: const EdgeInsets.all(8),
-                child: sidebarItems.elementAt(selected).child),
-          ),
-        )
-      ],
-    ));
+          children: [
+            SimpleSidebar(
+              simpleSidebarTheme: SimpleSidebarTheme(),
+              initialExpanded: false,
+              sidebarItems: widget.sidebarItems,
+              onTapped: (value) => onTapped(value),
+              toggleSidebar: (value) {
+                log("Sidebar is now $value");
+              },
+            ),
+            Expanded(
+              child: AnimatedOpacity(
+                opacity: isVisible ? 1 : 0,
+                duration: const Duration(milliseconds: 400),
+                child: Container(
+                    margin: const EdgeInsets.all(8),
+                    child: widget.sidebarItems.elementAt(selected).child),
+              ),
+            )
+          ],
+        ));
+  }
+
+  void onTapped(int value) {
+    setState(() {
+      isVisible = false;
+    });
+    Future.delayed(const Duration(milliseconds: 400), () {
+      setState(() {
+        selected = value;
+      });
+    }).then((value) {
+      setState(() {
+        isVisible = true;
+      });
+    });
   }
 }

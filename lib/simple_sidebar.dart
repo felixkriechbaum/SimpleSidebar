@@ -1,5 +1,7 @@
 library simple_sidebar;
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:simple_sidebar/simple_sidebar_element.dart';
 import 'package:simple_sidebar/simple_sidebar_item.dart';
@@ -12,13 +14,10 @@ class SimpleSidebar extends StatefulWidget {
   final Widget? titleImage;
   final String? titleText;
   final String? titleSubText;
-  final bool? initialState;
-  final bool? startIndexWithOne;
-  SimpleSidebarTheme simpleSidebarTheme;
+  final bool? initialExpanded;
+  final SimpleSidebarTheme simpleSidebarTheme;
 
-  bool isExpanded = false;
-  int selectedValue = 0;
-  SimpleSidebar(
+  const SimpleSidebar(
       {required this.sidebarItems,
       required this.onTapped,
       required this.simpleSidebarTheme,
@@ -26,28 +25,34 @@ class SimpleSidebar extends StatefulWidget {
       this.titleImage,
       this.titleText,
       this.titleSubText,
-      this.initialState,
-      this.startIndexWithOne,
-      super.key}) {
-    isExpanded = initialState ?? false;
-  }
+      this.initialExpanded,
+      super.key});
 
   @override
   State<SimpleSidebar> createState() => _SimpleSidebarState();
 }
 
 class _SimpleSidebarState extends State<SimpleSidebar> {
+  bool isExpanded = false;
+  int selectedValue = 0;
+
+  @override
+  void initState() {
+    isExpanded = widget.initialExpanded ?? false;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
       margin: const EdgeInsets.fromLTRB(8, 8, 0, 8),
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
-      width: widget.isExpanded
+      width: isExpanded
           ? widget.simpleSidebarTheme.expandedWidth ?? 190
           : widget.simpleSidebarTheme.collapsedWidth ?? 73,
       decoration: BoxDecoration(
-          color: widget.isExpanded
+          color: isExpanded
               ? widget.simpleSidebarTheme.expandedBackgroundColor
               : widget.simpleSidebarTheme.collapsedBackgroundColor,
           borderRadius: BorderRadius.circular(16)),
@@ -70,14 +75,14 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
                           height: 54,
                           color: Colors.red,
                           child: widget.titleImage)
-                      : SizedBox(),
+                      : const SizedBox(),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 400),
                         curve: Curves.easeInOut,
-                        width: widget.isExpanded ? 110 : 0,
+                        width: isExpanded ? 110 : 0,
                         child: widget.titleText != null
                             ? Text(
                                 widget.titleText.toString(),
@@ -89,13 +94,13 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 400),
                         curve: Curves.easeInOut,
-                        width: widget.isExpanded ? 110 : 0,
+                        width: isExpanded ? 110 : 0,
                         child: widget.titleSubText != null
                             ? Text(
                                 widget.titleSubText.toString(),
                                 overflow: TextOverflow.fade,
                                 softWrap: false,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 12, color: Colors.black),
                               )
                             : null,
@@ -105,9 +110,8 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
                 ],
               ),
               ListView.separated(
-                separatorBuilder: (BuildContext context, int index) =>
-                    const SizedBox(
-                  height: 8,
+                separatorBuilder: (BuildContext context, int index) => SizedBox(
+                  height: widget.simpleSidebarTheme.distanceBetweenElements,
                 ),
                 shrinkWrap: true,
                 itemCount: widget.sidebarItems.length,
@@ -118,7 +122,7 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
               ),
               const Spacer(),
               Tooltip(
-                message: widget.isExpanded ? "Collapse" : "Expand",
+                message: isExpanded ? "Collapse" : "Expand",
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(32),
@@ -126,7 +130,7 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
                   child: ListTile(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(32)),
-                    leading: widget.isExpanded
+                    leading: isExpanded
                         ? const Icon(Icons.arrow_back)
                         : const Icon(Icons.arrow_forward),
                     title: const Text("Collapse",
@@ -144,11 +148,11 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
   }
 
   Widget listTileElement(SimpleSidebarItem item, int index) {
-    bool isSelected = widget.selectedValue == index;
+    bool isSelected = selectedValue == index;
     return Tooltip(
       message: item.title,
       child: Container(
-        margin: EdgeInsets.only(bottom: 4),
+        margin: const EdgeInsets.only(bottom: 4),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(32),
           color: isSelected
@@ -172,10 +176,10 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
             softWrap: false,
           ),
           onTap: () {
-            widget.onTapped(
-                widget.startIndexWithOne ?? false ? index + 1 : index);
+            log(index.toString());
+            widget.onTapped(index);
             setState(() {
-              widget.selectedValue = index;
+              selectedValue = index;
             });
           },
           hoverColor: widget.simpleSidebarTheme.hoverColor,
@@ -186,8 +190,8 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
 
   toggleExpanded() {
     setState(() {
-      widget.isExpanded = !widget.isExpanded;
-      widget.toggleSidebar(widget.isExpanded);
+      isExpanded = !isExpanded;
+      widget.toggleSidebar(isExpanded);
     });
   }
 }
