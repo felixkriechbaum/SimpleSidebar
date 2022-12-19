@@ -1,10 +1,10 @@
 Simple and quick to set up sidebar. Soft animations
 
-![Image from the Package](http://mediahub.glocknerstudios.at/sidebar/SimpleSidebar002.png)
+![Image from the Package](https://mediahub.glocknerstudios.at/sidebar/SimpleSidebar002.png)
 
 ## Features
 
-![Video from the Package](http://mediahub.glocknerstudios.at/sidebar/presentation.mp4)
+![Video from the Package](https://mediahub.glocknerstudios.at/sidebar/presentation.mp4)
 
 ## Getting started
 
