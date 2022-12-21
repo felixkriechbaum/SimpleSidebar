@@ -18,3 +18,7 @@
 * Added new options for Text Overflow and Word Wrap
 * Lowerd version number
 * Added some api docs
+
+## 0.0.5
+* Fixed link to Github Page
+* Almost full api docs

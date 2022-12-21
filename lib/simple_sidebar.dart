@@ -8,15 +8,31 @@ import 'package:simple_sidebar/simple_sidebar_item.dart';
 import 'package:simple_sidebar/simple_sidebar_theme.dart';
 
 class SimpleSidebar extends StatefulWidget {
+  /// onTapped Callback
   final ValueChanged<int> onTapped;
+
+  /// toggleSidebar Callback
   final ValueChanged<bool> toggleSidebar;
+
+  /// The items of the sidebar
   final List<SimpleSidebarElement> sidebarItems;
+
+  /// The title image (like app icon)
   final Widget? titleImage;
+
+  /// The title text (like app name)
   final String? titleText;
+
+  /// The title sub text (like version number)
   final String? titleSubText;
+
+  /// The initial expanded state of the sidebar (default: false)
   final bool? initialExpanded;
+
+  /// The theme of the sidebar
   final SimpleSidebarTheme simpleSidebarTheme;
 
+  /// Creates a new [SimpleSidebar]
   const SimpleSidebar(
       {Key? key,
       required this.sidebarItems,
@@ -148,6 +164,7 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
     );
   }
 
+  /// Widget like method for the SidebarItems
   Widget listTileElement(SimpleSidebarItem item, int index) {
     bool isSelected = selectedValue == index;
     return Tooltip(
