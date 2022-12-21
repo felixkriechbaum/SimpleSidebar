@@ -18,15 +18,16 @@ class SimpleSidebar extends StatefulWidget {
   final SimpleSidebarTheme simpleSidebarTheme;
 
   const SimpleSidebar(
-      {required this.sidebarItems,
+      {Key? key,
+      required this.sidebarItems,
       required this.onTapped,
       required this.simpleSidebarTheme,
       required this.toggleSidebar,
       this.titleImage,
       this.titleText,
       this.titleSubText,
-      this.initialExpanded,
-      super.key});
+      this.initialExpanded})
+      : super(key: key);
 
   @override
   State<SimpleSidebar> createState() => _SimpleSidebarState();
@@ -172,8 +173,8 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
                   : widget.simpleSidebarTheme.unselectedIconColor),
           title: Text(
             item.title,
-            overflow: TextOverflow.clip,
-            softWrap: false,
+            overflow: item.textOverflow ?? TextOverflow.ellipsis,
+            softWrap: item.wrapWord ?? false,
           ),
           onTap: () {
             log(index.toString());

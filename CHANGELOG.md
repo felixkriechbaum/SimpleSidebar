@@ -11,4 +11,10 @@
 * Updated pub.dev site
 
 ## 0.0.3
-+ Fixed pub.dev links (http->https)
+* Fixed pub.dev links (http->https)
+
+## 0.0.4
+* Fixed very long Menu names
+* Added new options for Text Overflow and Word Wrap
+* Lowerd version number
+* Added some api docs

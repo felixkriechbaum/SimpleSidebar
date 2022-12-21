@@ -44,6 +44,11 @@ class MyHomePage extends StatefulWidget {
         iconFront: Icons.group_outlined,
         child: const Center(child: Text("Users"))),
     SimpleSidebarItem(
+        title: "Extra long name for a menu item",
+        wrapWord: true,
+        iconFront: Icons.group_outlined,
+        child: const Center(child: Text("Users"))),
+    SimpleSidebarItem(
         title: "Exit",
         iconEnd: Icons.close,
         child: const Center(child: Text("Exit"))),
