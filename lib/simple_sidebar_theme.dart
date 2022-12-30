@@ -37,6 +37,9 @@ class SimpleSidebarTheme {
   /// The distance between the elements in the sidebar
   double? distanceBetweenElements = 8;
 
+  /// The text style of the title
+  TextStyle? titleTextTheme = const TextStyle();
+
   /// Creates a new [SimpleSidebarTheme]
   SimpleSidebarTheme(
       {this.expandedBackgroundColor = Colors.blueGrey,
@@ -50,5 +53,6 @@ class SimpleSidebarTheme {
       this.hoverColor = Colors.black12,
       this.expandedWidth,
       this.collapsedWidth,
+      this.titleTextTheme,
       this.distanceBetweenElements});
 }

@@ -1,7 +1,5 @@
 library simple_sidebar;
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:simple_sidebar/simple_sidebar_element.dart';
 import 'package:simple_sidebar/simple_sidebar_item.dart';
@@ -26,6 +24,12 @@ class SimpleSidebar extends StatefulWidget {
   /// The title sub text (like version number)
   final String? titleSubText;
 
+  /// The text to show when the sidebar is expanded
+  final String? expandedString;
+
+  /// The text to show when the sidebar is collapsed
+  final String? collapsedString;
+
   /// The initial expanded state of the sidebar (default: false)
   final bool? initialExpanded;
 
@@ -42,6 +46,8 @@ class SimpleSidebar extends StatefulWidget {
       this.titleImage,
       this.titleText,
       this.titleSubText,
+      this.collapsedString,
+      this.expandedString,
       this.initialExpanded})
       : super(key: key);
 
@@ -87,11 +93,8 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   widget.titleImage != null
-                      ? Container(
-                          width: 54,
-                          height: 54,
-                          color: Colors.red,
-                          child: widget.titleImage)
+                      ? SizedBox(
+                          width: 54, height: 54, child: widget.titleImage)
                       : const SizedBox(),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -99,10 +102,15 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 400),
                         curve: Curves.easeInOut,
-                        width: isExpanded ? 110 : 0,
+                        width: isExpanded
+                            ? widget.titleImage == null
+                                ? 162
+                                : 110
+                            : 0,
                         child: widget.titleText != null
                             ? Text(
                                 widget.titleText.toString(),
+                                style: widget.simpleSidebarTheme.titleTextTheme,
                                 overflow: TextOverflow.fade,
                                 softWrap: false,
                               )
@@ -139,7 +147,9 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
               ),
               const Spacer(),
               Tooltip(
-                message: isExpanded ? "Collapse" : "Expand",
+                message: isExpanded
+                    ? widget.collapsedString ?? "Collapse"
+                    : widget.expandedString ?? "Expand",
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(32),
@@ -150,8 +160,8 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
                     leading: isExpanded
                         ? const Icon(Icons.arrow_back)
                         : const Icon(Icons.arrow_forward),
-                    title: const Text("Collapse",
-                        softWrap: false, overflow: TextOverflow.clip),
+                    title: Text(widget.collapsedString ?? "Collapse",
+                        softWrap: false, overflow: TextOverflow.fade),
                     onTap: () => toggleExpanded(),
                     hoverColor: widget.simpleSidebarTheme.hoverColor,
                   ),
@@ -194,7 +204,6 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
             softWrap: item.wrapWord ?? false,
           ),
           onTap: () {
-            log(index.toString());
             widget.onTapped(index);
             setState(() {
               selectedValue = index;

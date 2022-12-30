@@ -71,9 +71,19 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Row(
           children: [
             SimpleSidebar(
-              simpleSidebarTheme: SimpleSidebarTheme(),
+              simpleSidebarTheme: SimpleSidebarTheme(
+                titleTextTheme: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              titleText: "Hello World",
+              titleImage: const Icon(Icons.public),
               initialExpanded: false,
               sidebarItems: widget.sidebarItems,
+              collapsedString: "Collapse Me :)",
+              expandedString: "Expand Me :)",
               onTapped: (value) => onTapped(value),
               toggleSidebar: (value) {
                 log("Sidebar is now $value");
