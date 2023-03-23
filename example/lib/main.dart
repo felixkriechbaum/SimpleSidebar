@@ -1,8 +1,10 @@
 import 'dart:developer';
 
+import 'package:example/colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_sidebar/simple_sidebar.dart';
+import 'package:simple_sidebar/simple_sidebar_o.dart';
 import 'package:simple_sidebar/simple_sidebar_item.dart';
 import 'package:simple_sidebar/simple_sidebar_theme.dart';
 
@@ -48,10 +50,6 @@ class MyHomePage extends StatefulWidget {
       wrapWord: true,
       leading: const Icon(Icons.group_outlined),
     ),
-    SimpleSidebarItem(
-      title: "Exit",
-      trailing: const Icon(Icons.close),
-    ),
   ];
   final List<SimpleSidebarItem> footerItems = [
     SimpleSidebarItem(
@@ -73,31 +71,29 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.blueGrey[800],
+        backgroundColor: kcBackground,
         body: Row(
           children: [
             SimpleSidebar(
-              simpleSidebarTheme: SimpleSidebarTheme(
-                  titleTextTheme: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  selectedTextColor: Colors.white,
-                  unselectedTextColor: Colors.grey,
-                  selectedIconColor: Colors.white,
-                  unselectedIconColor: Colors.grey),
-              titleText: "Hello World",
-              titleImage: const Icon(Icons.public),
-              initialExpanded: false,
-              sidebarItems: widget.sidebarItems,
-              sidebarFooterItems: widget.footerItems,
-              collapsedString: "Collapse Me :)",
-              expandedString: "Expand Me :)",
-              onTapped: (value) => onTapped(value),
-              toggleSidebar: (value) {
-                log("Sidebar is now $value");
-              },
+              sidebarItems: [
+                SimpleSidebarItem(
+                  title: "Home",
+                  leading: const Icon(Icons.home_outlined),
+                ),
+                SimpleSidebarItem(
+                  title: "Gallery",
+                  leading: const Icon(Icons.image_outlined),
+                ),
+                SimpleSidebarItem(
+                  title: "Users",
+                  leading: const Icon(Icons.group_outlined),
+                ),
+                SimpleSidebarItem(
+                  title: "Extra long name for a menu item",
+                  wrapWord: true,
+                  leading: const Icon(Icons.group_outlined),
+                ),
+              ],
             ),
             Expanded(
               child: AnimatedOpacity(
