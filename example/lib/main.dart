@@ -19,8 +19,8 @@ class MyApp extends StatelessWidget {
       title: 'Simplesidebar Demo',
       theme: ThemeData(
         textTheme: const TextTheme(
-          bodyText1: TextStyle(color: Colors.white),
-          bodyText2: TextStyle(color: Colors.white),
+          bodyLarge: TextStyle(color: Colors.white),
+          bodyMedium: TextStyle(color: Colors.white),
         ),
       ),
       debugShowCheckedModeBanner: kDebugMode,
@@ -32,26 +32,32 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   final List<SimpleSidebarItem> sidebarItems = [
     SimpleSidebarItem(
-        title: "Home",
-        iconFront: Icons.home_outlined,
-        child: const Center(child: Text("Home"))),
+      title: "Home",
+      leading: const Icon(Icons.home_outlined),
+    ),
     SimpleSidebarItem(
-        title: "Gallery",
-        iconFront: Icons.image_outlined,
-        child: const Center(child: Text("Gallery"))),
+      title: "Gallery",
+      leading: const Icon(Icons.image_outlined),
+    ),
     SimpleSidebarItem(
-        title: "Users",
-        iconFront: Icons.group_outlined,
-        child: const Center(child: Text("Users"))),
+      title: "Users",
+      leading: const Icon(Icons.group_outlined),
+    ),
     SimpleSidebarItem(
-        title: "Extra long name for a menu item",
-        wrapWord: true,
-        iconFront: Icons.group_outlined,
-        child: const Center(child: Text("Users"))),
+      title: "Extra long name for a menu item",
+      wrapWord: true,
+      leading: const Icon(Icons.group_outlined),
+    ),
     SimpleSidebarItem(
-        title: "Exit",
-        iconEnd: Icons.close,
-        child: const Center(child: Text("Exit"))),
+      title: "Exit",
+      trailing: const Icon(Icons.close),
+    ),
+  ];
+  final List<SimpleSidebarItem> footerItems = [
+    SimpleSidebarItem(
+      title: "Logout",
+      trailing: const Icon(Icons.close),
+    ),
   ];
   final String title;
 
@@ -72,16 +78,20 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             SimpleSidebar(
               simpleSidebarTheme: SimpleSidebarTheme(
-                titleTextTheme: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+                  titleTextTheme: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  selectedTextColor: Colors.white,
+                  unselectedTextColor: Colors.grey,
+                  selectedIconColor: Colors.white,
+                  unselectedIconColor: Colors.grey),
               titleText: "Hello World",
               titleImage: const Icon(Icons.public),
               initialExpanded: false,
               sidebarItems: widget.sidebarItems,
+              sidebarFooterItems: widget.footerItems,
               collapsedString: "Collapse Me :)",
               expandedString: "Expand Me :)",
               onTapped: (value) => onTapped(value),
@@ -95,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 duration: const Duration(milliseconds: 400),
                 child: Container(
                     margin: const EdgeInsets.all(8),
-                    child: widget.sidebarItems.elementAt(selected).child),
+                    child: const <Widget>[Text("hallo"), Text("hallo2")][0]),
               ),
             )
           ],

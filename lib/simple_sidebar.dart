@@ -15,6 +15,9 @@ class SimpleSidebar extends StatefulWidget {
   /// The items of the sidebar
   final List<SimpleSidebarElement> sidebarItems;
 
+  /// The footer items of the sidebar
+  final List<SimpleSidebarElement>? sidebarFooterItems;
+
   /// The title image (like app icon)
   final Widget? titleImage;
 
@@ -34,15 +37,16 @@ class SimpleSidebar extends StatefulWidget {
   final bool? initialExpanded;
 
   /// The theme of the sidebar
-  final SimpleSidebarTheme simpleSidebarTheme;
+  SimpleSidebarTheme? simpleSidebarTheme = SimpleSidebarTheme();
 
   /// Creates a new [SimpleSidebar]
-  const SimpleSidebar(
+  SimpleSidebar(
       {Key? key,
       required this.sidebarItems,
       required this.onTapped,
-      required this.simpleSidebarTheme,
       required this.toggleSidebar,
+      this.sidebarFooterItems,
+      this.simpleSidebarTheme,
       this.titleImage,
       this.titleText,
       this.titleSubText,
@@ -72,12 +76,12 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
       width: isExpanded
-          ? widget.simpleSidebarTheme.expandedWidth ?? 190
-          : widget.simpleSidebarTheme.collapsedWidth ?? 73,
+          ? widget.simpleSidebarTheme?.expandedWidth ?? 190
+          : widget.simpleSidebarTheme?.collapsedWidth ?? 73,
       decoration: BoxDecoration(
           color: isExpanded
-              ? widget.simpleSidebarTheme.expandedBackgroundColor
-              : widget.simpleSidebarTheme.collapsedBackgroundColor,
+              ? widget.simpleSidebarTheme?.expandedBackgroundColor
+              : widget.simpleSidebarTheme?.collapsedBackgroundColor,
           borderRadius: BorderRadius.circular(16)),
       child: Material(
         color: Colors.transparent,
@@ -110,7 +114,8 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
                         child: widget.titleText != null
                             ? Text(
                                 widget.titleText.toString(),
-                                style: widget.simpleSidebarTheme.titleTextTheme,
+                                style:
+                                    widget.simpleSidebarTheme?.titleTextTheme,
                                 overflow: TextOverflow.fade,
                                 softWrap: false,
                               )
@@ -136,7 +141,7 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
               ),
               ListView.separated(
                 separatorBuilder: (BuildContext context, int index) => SizedBox(
-                  height: widget.simpleSidebarTheme.distanceBetweenElements,
+                  height: widget.simpleSidebarTheme?.distanceBetweenElements,
                 ),
                 shrinkWrap: true,
                 itemCount: widget.sidebarItems.length,
@@ -146,6 +151,21 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
                 },
               ),
               const Spacer(),
+              if (widget.sidebarFooterItems != null &&
+                  widget.sidebarFooterItems!.isNotEmpty)
+                ListView.separated(
+                  separatorBuilder: (BuildContext context, int index) =>
+                      SizedBox(
+                    height: widget.simpleSidebarTheme?.distanceBetweenElements,
+                  ),
+                  shrinkWrap: true,
+                  itemCount: widget.sidebarFooterItems!.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    SimpleSidebarElement element =
+                        widget.sidebarFooterItems![index];
+                    return listTileElement(element as SimpleSidebarItem, index);
+                  },
+                ),
               Tooltip(
                 message: isExpanded
                     ? widget.collapsedString ?? "Collapse"
@@ -158,12 +178,22 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(32)),
                     leading: isExpanded
-                        ? const Icon(Icons.arrow_back)
-                        : const Icon(Icons.arrow_forward),
-                    title: Text(widget.collapsedString ?? "Collapse",
-                        softWrap: false, overflow: TextOverflow.fade),
+                        ? Icon(Icons.arrow_back,
+                            color:
+                                widget.simpleSidebarTheme?.selectedIconColor ??
+                                    Colors.white)
+                        : Icon(Icons.arrow_forward,
+                            color:
+                                widget.simpleSidebarTheme?.selectedIconColor ??
+                                    Colors.white),
+                    title: Text(
+                      widget.collapsedString ?? "Collapse",
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                      style: widget.simpleSidebarTheme?.collapseTheme,
+                    ),
                     onTap: () => toggleExpanded(),
-                    hoverColor: widget.simpleSidebarTheme.hoverColor,
+                    hoverColor: widget.simpleSidebarTheme?.hoverColor,
                   ),
                 ),
               ),
@@ -184,22 +214,28 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(32),
           color: isSelected
-              ? widget.simpleSidebarTheme.selectedBackgroundcolor
-              : widget.simpleSidebarTheme.unselectedBackgroundcolor,
+              ? widget.simpleSidebarTheme?.selectedBackgroundcolor
+              : widget.simpleSidebarTheme?.unselectedBackgroundcolor,
         ),
         child: ListTile(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-          leading: Icon(item.iconFront,
-              color: isSelected
-                  ? widget.simpleSidebarTheme.selectedIconColor
-                  : widget.simpleSidebarTheme.unselectedIconColor),
-          trailing: Icon(item.iconEnd,
-              color: isSelected
-                  ? widget.simpleSidebarTheme.selectedIconColor
-                  : widget.simpleSidebarTheme.unselectedIconColor),
+          leading: item.leading ??
+              Icon(item.leadingIcon,
+                  color: isSelected
+                      ? widget.simpleSidebarTheme?.selectedIconColor
+                      : widget.simpleSidebarTheme?.unselectedIconColor),
+          trailing: item.trailing ??
+              Icon(item.trailingIcon,
+                  color: isSelected
+                      ? widget.simpleSidebarTheme?.selectedIconColor
+                      : widget.simpleSidebarTheme?.unselectedIconColor),
           title: Text(
             item.title,
+            style: TextStyle(
+                color: isSelected
+                    ? widget.simpleSidebarTheme?.selectedTextColor
+                    : widget.simpleSidebarTheme?.unselectedTextColor),
             overflow: item.textOverflow ?? TextOverflow.ellipsis,
             softWrap: item.wrapWord ?? false,
           ),
@@ -209,7 +245,7 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
               selectedValue = index;
             });
           },
-          hoverColor: widget.simpleSidebarTheme.hoverColor,
+          hoverColor: widget.simpleSidebarTheme?.hoverColor,
         ),
       ),
     );

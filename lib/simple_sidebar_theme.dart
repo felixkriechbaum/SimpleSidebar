@@ -34,11 +34,14 @@ class SimpleSidebarTheme {
   /// The width of the sidebar when it is collapsed
   double? collapsedWidth = 73;
 
+  /// The style of the collapse/expand text
+  TextStyle? collapseTheme;
+
   /// The distance between the elements in the sidebar
   double? distanceBetweenElements = 8;
 
   /// The text style of the title
-  TextStyle? titleTextTheme = const TextStyle();
+  TextStyle? titleTextTheme;
 
   /// Creates a new [SimpleSidebarTheme]
   SimpleSidebarTheme(
@@ -53,6 +56,7 @@ class SimpleSidebarTheme {
       this.hoverColor = Colors.black12,
       this.expandedWidth,
       this.collapsedWidth,
-      this.titleTextTheme,
+      this.titleTextTheme = const TextStyle(fontSize: 24, color: Colors.white),
+      this.collapseTheme = const TextStyle(fontSize: 14, color: Colors.white),
       this.distanceBetweenElements});
 }
