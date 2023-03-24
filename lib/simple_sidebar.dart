@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:simple_sidebar/interface/simple_sidebar_element.dart';
 import 'package:simple_sidebar/simple_sidebar_item.dart';
 import 'package:simple_sidebar/simple_sidebar_theme.dart';
 
@@ -13,7 +12,7 @@ class SimpleSidebar extends StatefulWidget {
 
   final List<SimpleSidebarItem> footerItems;
 
-  int index = 0;
+  int selectedIndex = 0;
 
   bool expanded = false;
 
@@ -52,18 +51,8 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
                 },
                 itemBuilder: (context, index) {
                   SimpleSidebarItem it = widget.sidebarItems[index];
-                  return widget.expanded
-                      ? ListTile(
-                          leading: it.leading,
-                          title: Text(it.title),
-                        )
-                      : TextButton(
-                          child: it.leading!.runtimeType == Icon
-                              ? Icon((it.leading! as Icon).icon,
-                                  color: Colors.black)
-                              : it.leading!,
-                          onPressed: () {},
-                        );
+                  bool selected = index == widget.selectedIndex;
+                  return listItem(index, selected, it);
                 },
               ),
             ),
@@ -72,10 +61,33 @@ class _SimpleSidebarState extends State<SimpleSidebar> {
               shrinkWrap: true,
               itemCount: widget.footerItems.length,
               itemBuilder: (context, index) {
-                return ListTile();
+                SimpleSidebarItem it = widget.sidebarItems[index];
+                bool selected = index == widget.selectedIndex;
+                return listItem(index, selected, it);
               },
             ),
           ]),
     );
+  }
+
+  Widget listItem(int index, bool selected, SimpleSidebarItem it) {
+    return widget.expanded
+        ? ListTile(
+            leading: it.leading,
+            title: Text(it.title),
+          )
+        : TextButton(
+            child: it.leading!.runtimeType == Icon
+                ? Icon((it.leading! as Icon).icon,
+                    color: selected
+                        ? widget.theme.selectedIconColor
+                        : widget.theme.unselectedIconColor)
+                : it.leading!,
+            onPressed: () {
+              setState(() {
+                widget.selectedIndex = index;
+              });
+            },
+          );
   }
 }

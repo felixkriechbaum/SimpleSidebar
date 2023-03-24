@@ -1,12 +1,8 @@
-import 'dart:developer';
-
 import 'package:example/colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_sidebar/simple_sidebar.dart';
-import 'package:simple_sidebar/simple_sidebar_o.dart';
 import 'package:simple_sidebar/simple_sidebar_item.dart';
-import 'package:simple_sidebar/simple_sidebar_theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -92,6 +88,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   title: "Extra long name for a menu item",
                   wrapWord: true,
                   leading: const Icon(Icons.group_outlined),
+                ),
+              ],
+              footerItems: [
+                SimpleSidebarItem(
+                  title: "Logout",
+                  leading: const Icon(Icons.logout),
                 ),
               ],
             ),
