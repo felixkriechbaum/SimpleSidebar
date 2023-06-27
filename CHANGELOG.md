@@ -45,8 +45,10 @@
 ## 0.0.8
 * Improvement
   * Reworked SimpleSidebarThemeData
-  * Renamed iconFront & iconEnd to leading, trailing and switched to Widget
-* Removed:
-  * Unused child in SimpleSidebarItem
-* Added:
-  * FooterItems (eg. Logout, Settings, etc.)
+  * Reworked SimpleSidebarControler
+  * Reworked SimpleSidebarItem
+  * Reworked SimpleSidebar
+  * Updated example
+  * Add FooterItems (eg. Logout, Settings, etc.)
+* Todo:
+  * Add Header back 😬

@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:example/colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_sidebar/simple_sidebar.dart';
 import 'package:simple_sidebar/simple_sidebar_item.dart';
+import 'package:simple_sidebar/simple_sidebar_theme_data.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,40 +25,27 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: kDebugMode,
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  MyHomePage({super.key});
+
+  final SimpleSidebarThemeData theme = SimpleSidebarThemeData()
+    ..expandedShape = const BorderRadius.all(Radius.circular(8))
+    ..collapsedShape = const BorderRadius.all(Radius.circular(8));
   final List<SimpleSidebarItem> sidebarItems = [
-    SimpleSidebarItem(
-      title: "Home",
-      leading: const Icon(Icons.home_outlined),
-    ),
-    SimpleSidebarItem(
-      title: "Gallery",
-      leading: const Icon(Icons.image_outlined),
-    ),
-    SimpleSidebarItem(
-      title: "Users",
-      leading: const Icon(Icons.group_outlined),
-    ),
-    SimpleSidebarItem(
-      title: "Extra long name for a menu item",
-      wrapWord: true,
-      leading: const Icon(Icons.group_outlined),
-    ),
+    SimpleSidebarItem(onTap: () {}, title: "Home", leading: Icons.home_outlined),
+    SimpleSidebarItem(onTap: () {}, title: "Gallery", leading: Icons.image_outlined),
+    SimpleSidebarItem(onTap: () {}, title: "Users", leading: Icons.group_outlined),
+    SimpleSidebarItem(onTap: () {}, title: "Extra long name for a menu item", leading: Icons.list),
   ];
   final List<SimpleSidebarItem> footerItems = [
-    SimpleSidebarItem(
-      title: "Logout",
-      trailing: const Icon(Icons.close),
-    ),
+    SimpleSidebarItem(onTap: () {}, title: "Settings", leading: Icons.settings),
+    SimpleSidebarItem(onTap: () {}, title: "Logout", leading: Icons.close),
   ];
-  final String title;
-
-  MyHomePage({super.key, required this.title});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -67,61 +57,55 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: kcBackground,
-        body: Row(
-          children: [
-            SimpleSidebar(
-              sidebarItems: [
-                SimpleSidebarItem(
-                  title: "Home",
-                  leading: const Icon(Icons.home_outlined),
-                ),
-                SimpleSidebarItem(
-                  title: "Gallery",
-                  leading: const Icon(Icons.image_outlined),
-                ),
-                SimpleSidebarItem(
-                  title: "Users",
-                  leading: const Icon(Icons.group_outlined),
-                ),
-                SimpleSidebarItem(
-                  title: "Extra long name for a menu item",
-                  wrapWord: true,
-                  leading: const Icon(Icons.group_outlined),
-                ),
-              ],
-              footerItems: [
-                SimpleSidebarItem(
-                  title: "Logout",
-                  leading: const Icon(Icons.logout),
-                ),
-              ],
+      backgroundColor: kcBackground,
+      body: Row(
+        children: [
+          SimpleSidebar(
+            theme: widget.theme,
+            initialExpanded: true,
+            initialIndex: 1,
+            childrens: widget.sidebarItems,
+            footerItems: widget.footerItems,
+            onTap: (value) {
+              setState(() {
+                selected = value;
+              });
+              log("selected value $value");
+            },
+          ),
+          Expanded(
+            child: AnimatedOpacity(
+              opacity: isVisible ? 1 : 0,
+              duration: const Duration(milliseconds: 300),
+              child: Container(
+                  margin: const EdgeInsets.all(8),
+                  child: const <Widget>[
+                    Text("hallo"),
+                    Text("hallo2"),
+                    Text("hallo3"),
+                    Text("hallo4"),
+                    Text("hallo5"),
+                    Text("hallo6"),
+                  ][selected]),
             ),
-            Expanded(
-              child: AnimatedOpacity(
-                opacity: isVisible ? 1 : 0,
-                duration: const Duration(milliseconds: 400),
-                child: Container(
-                    margin: const EdgeInsets.all(8),
-                    child: const <Widget>[Text("hallo"), Text("hallo2")][0]),
-              ),
-            )
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 
-  void onTapped(int value) {
-    setState(() {
-      isVisible = false;
-    });
-    Future.delayed(const Duration(milliseconds: 400), () {
-      setState(() {
-        selected = value;
-      });
-    }).then((value) {
-      setState(() {
-        isVisible = true;
-      });
-    });
-  }
+  // void onTapped(int value) {
+  //   setState(() {
+  //     isVisible = false;
+  //   });
+  //   Future.delayed(const Duration(milliseconds: 400), () {
+  //     setState(() {
+  //       selected = value;
+  //     });
+  //   }).then((value) {
+  //     setState(() {
+  //       isVisible = true;
+  //     });
+  //   });
+  // }
 }
