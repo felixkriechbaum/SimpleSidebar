@@ -4,7 +4,10 @@ Simple and quick to set up sidebar. Soft animations
 
 ## Features
 
-[![Video from the Package](https://mediahub.glocknerstudios.at/sidebar/SimpleSidebar002.png)](https://mediahub.glocknerstudios.at/sidebar/presentation.mp4)
+<video width="1280" height="720" controls>
+  <source src="https://mediahub.glocknerstudios.at/sidebar/presentation.mp4" type="video/mp4">
+</video>
+
 
 
 ## Getting started
