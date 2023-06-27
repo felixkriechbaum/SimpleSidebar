@@ -1,215 +1,158 @@
-library simple_sidebar;
+// ignore_for_file: must_be_immutable
 
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:simple_sidebar/simple_sidebar_element.dart';
+import 'package:simple_sidebar/simple_sidebar_controller.dart';
 import 'package:simple_sidebar/simple_sidebar_item.dart';
-import 'package:simple_sidebar/simple_sidebar_theme.dart';
+import 'package:simple_sidebar/simple_sidebar_theme_data.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class SimpleSidebar extends StatefulWidget {
-  /// onTapped Callback
-  final ValueChanged<int> onTapped;
+  SimpleSidebarController? controller;
+  SimpleSidebarThemeData? theme;
+  final List<SimpleSidebarItem> childrens;
+  final List<SimpleSidebarItem>? footerItems;
+  bool disableToggleButton;
+  int initialIndex;
+  bool initialExpanded;
+  Function(int)? onTap;
 
-  /// toggleSidebar Callback
-  final ValueChanged<bool> toggleSidebar;
-
-  /// The items of the sidebar
-  final List<SimpleSidebarElement> sidebarItems;
-
-  /// The title image (like app icon)
-  final Widget? titleImage;
-
-  /// The title text (like app name)
-  final String? titleText;
-
-  /// The title sub text (like version number)
-  final String? titleSubText;
-
-  /// The initial expanded state of the sidebar (default: false)
-  final bool? initialExpanded;
-
-  /// The theme of the sidebar
-  final SimpleSidebarTheme simpleSidebarTheme;
-
-  /// Creates a new [SimpleSidebar]
-  const SimpleSidebar(
-      {Key? key,
-      required this.sidebarItems,
-      required this.onTapped,
-      required this.simpleSidebarTheme,
-      required this.toggleSidebar,
-      this.titleImage,
-      this.titleText,
-      this.titleSubText,
-      this.initialExpanded})
-      : super(key: key);
+  SimpleSidebar({
+    Key? key,
+    this.controller,
+    this.onTap,
+    this.theme,
+    this.initialIndex = 0,
+    required this.childrens,
+    this.footerItems,
+    this.disableToggleButton = false,
+    this.initialExpanded = false,
+  }) : super(key: key) {
+    theme ??= SimpleSidebarThemeData();
+    controller ??= SimpleSidebarController();
+    if (initialExpanded) controller!.open!();
+  }
 
   @override
   State<SimpleSidebar> createState() => _SimpleSidebarState();
 }
 
-class _SimpleSidebarState extends State<SimpleSidebar> {
-  bool isExpanded = false;
-  int selectedValue = 0;
+class _SimpleSidebarState extends State<SimpleSidebar> with SingleTickerProviderStateMixin {
+  late int selectedIndex;
 
   @override
   void initState() {
-    isExpanded = widget.initialExpanded ?? false;
+    selectedIndex = widget.initialIndex;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      margin: const EdgeInsets.fromLTRB(8, 8, 0, 8),
-      duration: const Duration(milliseconds: 400),
-      curve: Curves.easeInOut,
-      width: isExpanded
-          ? widget.simpleSidebarTheme.expandedWidth ?? 190
-          : widget.simpleSidebarTheme.collapsedWidth ?? 73,
+      duration: widget.theme!.transitionDuration,
+      width: widget.controller!.isExpanded ? widget.theme!.expandedWidth : widget.theme!.collapsedWidth! + (widget.theme!.margin!.horizontal * 1),
+      padding: widget.theme!.padding!,
+      margin: widget.theme!.margin!,
       decoration: BoxDecoration(
-          color: isExpanded
-              ? widget.simpleSidebarTheme.expandedBackgroundColor
-              : widget.simpleSidebarTheme.collapsedBackgroundColor,
-          borderRadius: BorderRadius.circular(16)),
-      child: Material(
-        color: Colors.transparent,
-        child: Container(
-          margin: const EdgeInsets.all(8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  widget.titleImage != null
-                      ? Container(
-                          width: 54,
-                          height: 54,
-                          color: Colors.red,
-                          child: widget.titleImage)
-                      : const SizedBox(),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut,
-                        width: isExpanded ? 110 : 0,
-                        child: widget.titleText != null
-                            ? Text(
-                                widget.titleText.toString(),
-                                overflow: TextOverflow.fade,
-                                softWrap: false,
-                              )
-                            : null,
-                      ),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut,
-                        width: isExpanded ? 110 : 0,
-                        child: widget.titleSubText != null
-                            ? Text(
-                                widget.titleSubText.toString(),
-                                overflow: TextOverflow.fade,
-                                softWrap: false,
-                                style: const TextStyle(
-                                    fontSize: 12, color: Colors.black),
-                              )
-                            : null,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              ListView.separated(
-                separatorBuilder: (BuildContext context, int index) => SizedBox(
-                  height: widget.simpleSidebarTheme.distanceBetweenElements,
-                ),
-                shrinkWrap: true,
-                itemCount: widget.sidebarItems.length,
-                itemBuilder: (BuildContext context, int index) {
-                  SimpleSidebarElement element = widget.sidebarItems[index];
-                  return listTileElement(element as SimpleSidebarItem, index);
-                },
-              ),
-              const Spacer(),
-              Tooltip(
-                message: isExpanded ? "Collapse" : "Expand",
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(32),
-                  ),
-                  child: ListTile(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(32)),
-                    leading: isExpanded
-                        ? const Icon(Icons.arrow_back)
-                        : const Icon(Icons.arrow_forward),
-                    title: const Text("Collapse",
-                        softWrap: false, overflow: TextOverflow.clip),
-                    onTap: () => toggleExpanded(),
-                    hoverColor: widget.simpleSidebarTheme.hoverColor,
+        color: widget.theme!.collapsedBackgroundColor,
+        borderRadius: widget.theme!.collapsedShape,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Body
+                Expanded(
+                  child: ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: widget.childrens.length,
+                    itemBuilder: (context, index) {
+                      SimpleSidebarItem item = widget.childrens[index];
+                      return ListTile(
+                        onTap: () {
+                          setState(() {
+                            selectedIndex = index;
+                          });
+                          widget.childrens[index].onTap!();
+                          widget.onTap!(index);
+                        },
+                        selected: selectedIndex == index,
+                        leading: item.leading.runtimeType == IconData
+                            ? Icon(item.leading!, color: widget.theme!.unselectedIconColor!)
+                                .animate(target: selectedIndex == index ? 1 : 0)
+                                .tint(duration: widget.theme!.transitionDuration, color: widget.theme!.selectedIconColor!)
+                            : item.leadingWidget,
+                        title: AnimatedDefaultTextStyle(
+                          style: selectedIndex == index ? widget.theme!.selectedTextStyle! : widget.theme!.unselectedTextStyle!,
+                          duration: widget.theme!.transitionDuration,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                          child: Text(item.title),
+                        ),
+                      );
+                    },
                   ),
                 ),
-              ),
-            ],
+                // Footer
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: widget.footerItems!.length,
+                  itemBuilder: (context, index) {
+                    SimpleSidebarItem item = widget.footerItems![index];
+                    return ListTile(
+                      onTap: () {
+                        setState(() {
+                          selectedIndex = widget.childrens.length + index;
+                          log(selectedIndex.toString());
+                        });
+                        widget.footerItems![index].onTap!();
+                        widget.onTap!(widget.footerItems!.length + index);
+                      },
+                      selected: selectedIndex == widget.childrens.length + index,
+                      leading: item.leading.runtimeType == IconData
+                          ? Icon(item.leading!, color: widget.theme!.unselectedIconColor!)
+                              .animate(target: selectedIndex == widget.childrens.length + index ? 1 : 0)
+                              .tint(duration: widget.theme!.transitionDuration, color: widget.theme!.selectedIconColor!)
+                          : item.leadingWidget,
+                      title: AnimatedDefaultTextStyle(
+                        style:
+                            selectedIndex == widget.childrens.length + index ? widget.theme!.selectedTextStyle! : widget.theme!.unselectedTextStyle!,
+                        duration: widget.theme!.transitionDuration,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                        child: Text(item.title),
+                      ),
+                    );
+                  },
+                ),
+                // Togglebutton
+                if (widget.disableToggleButton == false)
+                  ListTile(
+                    onTap: () => setState(() {
+                      widget.controller!.toggle!();
+                    }),
+                    leading: AnimatedRotation(
+                      duration: widget.theme!.transitionDuration,
+                      turns: widget.controller!.isExpanded ? 0.5 : 1,
+                      child: const Icon(Icons.arrow_forward_ios),
+                    ),
+                    title: const Text(
+                      "Collapse",
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  )
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
-  }
-
-  /// Widget like method for the SidebarItems
-  Widget listTileElement(SimpleSidebarItem item, int index) {
-    bool isSelected = selectedValue == index;
-    return Tooltip(
-      message: item.title,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 4),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(32),
-          color: isSelected
-              ? widget.simpleSidebarTheme.selectedBackgroundcolor
-              : widget.simpleSidebarTheme.unselectedBackgroundcolor,
-        ),
-        child: ListTile(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-          leading: Icon(item.iconFront,
-              color: isSelected
-                  ? widget.simpleSidebarTheme.selectedIconColor
-                  : widget.simpleSidebarTheme.unselectedIconColor),
-          trailing: Icon(item.iconEnd,
-              color: isSelected
-                  ? widget.simpleSidebarTheme.selectedIconColor
-                  : widget.simpleSidebarTheme.unselectedIconColor),
-          title: Text(
-            item.title,
-            overflow: item.textOverflow ?? TextOverflow.ellipsis,
-            softWrap: item.wrapWord ?? false,
-          ),
-          onTap: () {
-            log(index.toString());
-            widget.onTapped(index);
-            setState(() {
-              selectedValue = index;
-            });
-          },
-          hoverColor: widget.simpleSidebarTheme.hoverColor,
-        ),
-      ),
-    );
-  }
-
-  toggleExpanded() {
-    setState(() {
-      isExpanded = !isExpanded;
-      widget.toggleSidebar(isExpanded);
-    });
   }
 }

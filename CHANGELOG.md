@@ -22,3 +22,33 @@
 ## 0.0.5
 * Fixed link to Github Page
 * Almost full api docs
+
+## 0.0.6
+* Removed:
+  * Unwanted log (printed index every time tapped got called)
+* Fixed
+  * always red background from the titleimage
+  * selectedTextColor & unselectedTextColor not used
+* Added
+  * titleTextTheme (for more customise possibilities)
+  * Collapse String
+* Cleanup:
+  * Not needed Container
+* Known bugs:
+  * Not able to change the size of the titleImage
+  * Not able to place elements on the bottom (footer)
+  
+## 0.0.7
+* Fixed:
+  * selectedTextColor & unselectedTextColor was still not used
+
+## 0.0.8
+* Improvement
+  * Reworked SimpleSidebarThemeData
+  * Reworked SimpleSidebarControler
+  * Reworked SimpleSidebarItem
+  * Reworked SimpleSidebar
+  * Updated example
+  * Add FooterItems (eg. Logout, Settings, etc.)
+* Todo:
+  * Add Header back 😬
